@@ -2,462 +2,172 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Cut Contract</title>
   <style>
     :root{
       --bg:#0b1220; --card:#0f1a31; --border:#203050;
-      --text:#ffffff; --muted:#a8b3cf; --muted2:#8090b5;
-      --btn:#2563eb; --in:#0b1220; --inborder:#2a3a60;
-      --ahead:#22c55e; --pace:#eab308; --behind:#ef4444; --unk:#94a3b8;
+      --text:#ffffff; --muted:#a8b3cf;
+      --btn:#2563eb; --ahead:#22c55e; --behind:#ef4444;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:0 auto;padding:18px;display:flex;flex-direction:column;gap:12px}
-    .top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1f2a44;padding:12px 2px}
-    .title{font-weight:900;letter-spacing:1px}
-    .btn, .btnGhost{
-      border-radius:14px;padding:10px 12px;font-weight:800;cursor:pointer;user-select:none;
-      display:inline-flex;align-items:center;justify-content:center;gap:8px
-    }
-    .btn{background:var(--btn);border:1px solid transparent}
-    .btnGhost{background:var(--in);border:1px solid var(--inborder)}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
-    .row{display:flex;gap:10px;align-items:center}
-    .rowBetween{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-    .big{font-size:44px;font-weight:950;line-height:1}
-    .huge{font-size:36px;font-weight:950;line-height:1.1}
-    .sub{font-size:16px;font-weight:900}
-    .mono{font-size:12px;color:var(--muted)}
-    .kpi{flex:1;display:flex;flex-direction:column;gap:4px}
-    .kLabel{font-size:12px;color:var(--muted);font-weight:800}
-    .kVal{font-size:16px;font-weight:900}
-    input{
-      width:100%;background:var(--in);border:1px solid var(--inborder);border-radius:12px;
-      padding:10px 12px;color:var(--text);outline:none
-    }
-    .hint{font-size:12px;color:var(--muted2)}
-    .pill{font-weight:900;padding:6px 10px;border-radius:999px;border:1px solid var(--inborder);background:#0b1220}
-    .status{font-size:18px;font-weight:950}
-    .list{display:flex;flex-direction:column;gap:8px}
-    .item{display:flex;justify-content:space-between;gap:10px;background:#0b1220;border:1px solid var(--inborder);border-radius:14px;padding:10px 12px}
-    .item small{color:var(--muted)}
-    .dangerBorder{border-color: var(--behind)}
-    .goodBorder{border-color: var(--ahead)}
-    .paceBorder{border-color: var(--pace)}
-    .unkBorder{border-color: var(--unk)}
-    a{color:var(--muted)}
+    body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);padding:15px;padding-bottom:50px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:12px}
+    .big{font-size:32px;font-weight:950;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+    .label{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:1px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .status-good{color:var(--ahead)}
+    .status-bad{color:var(--behind)}
+    input{width:100%;background:#0b1220;border:1px solid #2a3a60;border-radius:10px;padding:12px;color:white;margin:10px 0;font-size:16px}
+    .btn{background:var(--btn);border:none;color:white;padding:14px;border-radius:12px;font-weight:800;width:100%;cursor:pointer}
+    .btn:active{transform:scale(0.98)}
+    .item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1f2a44}
+    .check-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-weight:700;font-size:14px}
+    input[type="checkbox"]{width:22px;height:22px;margin:0}
+    .save-indicator{font-size:10px;color:var(--ahead);float:right;margin-top:4px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <div class="title">CUT CONTRACT</div>
-      <div class="row">
-        <button class="btnGhost" id="toggleSettings">Settings</button>
-        <button class="btnGhost" id="wipe">Wipe</button>
-      </div>
+
+  <div class="card">
+    <span class="save-indicator" id="saveHint">● SYNCED</span>
+    <div class="label">Daily Mission</div>
+    <div class="check-row"><input type="checkbox"> 12-3-30 Treadmill</div>
+    <div class="check-row"><input type="checkbox"> 10,000 Steps</div>
+    <div class="check-row"><input type="checkbox"> 1,600 Cals (Chicken/Rice/Eggs)</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Live Burn (TDEE 2800)</div>
+    <div class="big" id="liveBurn">0.000</div>
+    <div class="label" id="deficitDisp" style="margin-top:5px;color:var(--ahead)">Current Deficit: 0 kcal</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Contract</div>
+      <div class="big" id="pct">0.00%</div>
     </div>
-
-    <div id="settingsCard" class="card" style="display:none">
-      <div class="sub">Contract settings</div>
-
-      <div class="rowBetween">
-        <div class="kpi">
-          <div class="kLabel">Start date/time (local)</div>
-          <input id="startAt" type="datetime-local">
-          <div class="hint">Set when the cut begins.</div>
-        </div>
-        <div class="kpi">
-          <div class="kLabel">Deadline (local)</div>
-          <input id="endAt" type="datetime-local">
-          <div class="hint">Pick your May date/time.</div>
-        </div>
-      </div>
-
-      <div class="rowBetween">
-        <div class="kpi">
-          <div class="kLabel">Start weight (lbs)</div>
-          <input id="startWeight" inputmode="decimal" placeholder="e.g. 216">
-        </div>
-        <div class="kpi">
-          <div class="kLabel">Goal loss (lbs)</div>
-          <input id="goalLoss" inputmode="decimal" placeholder="e.g. 30">
-        </div>
-      </div>
-
-      <div class="row">
-        <button class="btn" id="saveSettings">Save</button>
-        <span class="mono" id="validNote"></span>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card" id="hudCard">
-        <div class="rowBetween">
-          <div>
-            <div class="big" id="pct">—</div>
-            <div class="mono">Progress updates every second</div>
-          </div>
-          <div class="pill" id="nowStr">—</div>
-        </div>
-
-        <div class="rowBetween">
-          <div class="kpi">
-            <div class="kLabel">Time remaining</div>
-            <div class="kVal" id="remain">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kLabel">Deadline</div>
-            <div class="kVal" id="deadlineStr">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="targetCard">
-        <div class="sub">Target right now</div>
-        <div class="huge" id="targetNow">—</div>
-        <div class="mono">Linear contract: startWeight − (goalLoss × timeProgress)</div>
-        <div class="rowBetween">
-          <div class="kpi">
-            <div class="kLabel">Target in 24h</div>
-            <div class="kVal" id="target24">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kLabel">Target in 7d</div>
-            <div class="kVal" id="target7">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="paceCard">
-        <div class="rowBetween">
-          <div>
-            <div class="sub">Pace status</div>
-            <div class="status" id="status">LOG WEIGHT</div>
-            <div class="mono" id="delta">—</div>
-          </div>
-          <div class="pill" id="latestWhen">—</div>
-        </div>
-
-        <div class="row">
-          <input id="weighInput" inputmode="decimal" placeholder="Log weigh-in (lbs)">
-          <button class="btn" id="addWeigh">Add</button>
-        </div>
-
-        <div class="row">
-          <button class="btnGhost" id="removeLatest">Remove latest</button>
-          <button class="btnGhost" id="help">?</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="sub">Weigh-ins</div>
-        <div class="list" id="list"></div>
-        <div class="mono" id="summary"></div>
-      </div>
-    </div>
-
-    <div class="mono">
-      Tip: put this on your phone home screen via your browser menu → “Add to Home screen”.
+    <div class="card">
+      <div class="label">Target Lbs</div>
+      <div class="big" id="targetNow">0.00</div>
     </div>
   </div>
 
+  <div class="card">
+    <div class="label">Weight Status</div>
+    <div id="status" class="big" style="font-size:26px;margin:5px 0">LOG WEIGHT</div>
+    <input id="weighInput" type="number" step="0.1" inputmode="decimal" placeholder="Enter lbs">
+    <button class="btn" id="addWeigh">Add Weigh-In</button>
+  </div>
+
+  <div class="card">
+    <div class="label">Log History</div>
+    <div id="list" style="margin-top:10px"></div>
+    <button class="btn" style="background:transparent;color:var(--behind);font-size:12px;margin-top:20px" id="wipe">Wipe All Data</button>
+  </div>
+
 <script>
-  const KEY = "cut_contract_web_v1";
+  const STORAGE_KEY = "CUT_CONTRACT_OFFICIAL_v1";
 
-  const el = (id) => document.getElementById(id);
-
-  const state = {
-    startAt: null, // ms
-    endAt: null,   // ms
+  // 1. Initial State
+  let state = {
+    startAt: new Date("2026-02-08T00:00:00").getTime(),
+    endAt: new Date("2026-05-01T00:00:00").getTime(),
     startWeight: 216,
     goalLoss: 30,
-    weighIns: [] // {t,w}
+    dailyIntake: 1600,
+    tdee: 2800,
+    weighIns: []
   };
 
-  function save() {
-    localStorage.setItem(KEY, JSON.stringify(state));
+  // 2. Load Function (The "Forever" Memory)
+  function loadState() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+      state = { ...state, ...parsed }; 
+    }
   }
 
-  function load() {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return false;
-    try {
-      const obj = JSON.parse(raw);
-      if (obj && typeof obj === "object") {
-        Object.assign(state, obj);
-        return true;
+  // 3. Save Function
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const hint = document.getElementById('saveHint');
+    hint.innerText = "● SAVED";
+    setTimeout(() => { hint.innerText = "● SYNCED"; }, 2000);
+  }
+
+  function render() {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    
+    // Live Burn Math
+    const msSinceMidnight = now.getTime() - startOfDay;
+    const burnedSoFar = msSinceMidnight * (state.tdee / 86400000);
+    document.getElementById('liveBurn').innerText = burnedSoFar.toFixed(3);
+    
+    const intakeSoFar = (state.dailyIntake / 86400000) * msSinceMidnight;
+    document.getElementById('deficitDisp').innerText = "Current Deficit: " + Math.floor(burnedSoFar - intakeSoFar) + " kcal";
+
+    // Contract Progress Math
+    const totalContractTime = state.endAt - state.startAt;
+    const elapsed = now.getTime() - state.startAt;
+    const progress = Math.max(0, Math.min(1, elapsed / totalContractTime));
+    
+    document.getElementById('pct').innerText = (progress * 100).toFixed(2) + "%";
+    
+    const currentTarget = state.startWeight - (state.goalLoss * progress);
+    document.getElementById('targetNow').innerText = currentTarget.toFixed(2);
+
+    // Pace Logic
+    const statusEl = document.getElementById('status');
+    if (state.weighIns.length > 0) {
+      const latest = state.weighIns[state.weighIns.length - 1].w;
+      const diff = currentTarget - latest;
+      if (diff >= 0) {
+        statusEl.innerText = "AHEAD +" + diff.toFixed(2);
+        statusEl.className = "big status-good";
+      } else {
+        statusEl.innerText = "BEHIND " + Math.abs(diff).toFixed(2);
+        statusEl.className = "big status-bad";
       }
-    } catch {}
-    return false;
-  }
-
-  function pad(n){ return String(n).padStart(2,"0"); }
-
-  function fmtLocal(ms){
-    if (!Number.isFinite(ms)) return "—";
-    const d = new Date(ms);
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-
-  function toInputLocal(ms){
-    if (!Number.isFinite(ms)) return "";
-    const d = new Date(ms);
-    // datetime-local expects "YYYY-MM-DDTHH:MM"
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-
-  function parseInputLocal(v){
-    // v = "YYYY-MM-DDTHH:MM"
-    const ms = new Date(v).getTime();
-    return Number.isNaN(ms) ? null : ms;
-  }
-
-  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-  function fmt2(n){
-    if (!Number.isFinite(n)) return "—";
-    return n.toFixed(2);
-  }
-
-  function formatDuration(ms){
-    let totalSec = Math.max(0, Math.floor(ms/1000));
-    const days = Math.floor(totalSec/86400);
-    totalSec %= 86400;
-    const hrs = Math.floor(totalSec/3600);
-    totalSec %= 3600;
-    const mins = Math.floor(totalSec/60);
-    const secs = totalSec % 60;
-    return `${days}d ${pad(hrs)}h ${pad(mins)}m ${pad(secs)}s`;
-  }
-
-  function validContract(){
-    return Number.isFinite(state.startAt) &&
-      Number.isFinite(state.endAt) &&
-      state.endAt > state.startAt &&
-      Number.isFinite(state.startWeight) &&
-      Number.isFinite(state.goalLoss) &&
-      state.goalLoss > 0;
-  }
-
-  function timeProgress(nowMs){
-    if (!validContract()) return 0;
-    return clamp01((nowMs - state.startAt) / (state.endAt - state.startAt));
-  }
-
-  function targetWeightAtProgress(p){
-    return state.startWeight - (state.goalLoss * p);
-  }
-
-  function targetWeightNow(nowMs){
-    if (!validContract()) return NaN;
-    return targetWeightAtProgress(timeProgress(nowMs));
-  }
-
-  function targetAt(nowMs, msAhead){
-    if (!validContract()) return NaN;
-    const p = clamp01((nowMs + msAhead - state.startAt) / (state.endAt - state.startAt));
-    return targetWeightAtProgress(p);
-  }
-
-  function latestWeighIn(){
-    if (!state.weighIns?.length) return null;
-    return [...state.weighIns].sort((a,b)=>b.t-a.t)[0];
-  }
-
-  function statusFromDelta(delta, eps=0.25){
-    if (!Number.isFinite(delta)) return "LOG WEIGHT";
-    if (Math.abs(delta) <= eps) return "ON PACE";
-    return delta > 0 ? "AHEAD" : "BEHIND";
-  }
-
-  function statusColor(status){
-    if (status === "AHEAD") return getComputedStyle(document.documentElement).getPropertyValue('--ahead').trim();
-    if (status === "ON PACE") return getComputedStyle(document.documentElement).getPropertyValue('--pace').trim();
-    if (status === "BEHIND") return getComputedStyle(document.documentElement).getPropertyValue('--behind').trim();
-    return getComputedStyle(document.documentElement).getPropertyValue('--unk').trim();
-  }
-
-  function setCardBorderByStatus(status){
-    const hud = el("hudCard");
-    const pace = el("paceCard");
-
-    hud.classList.remove("goodBorder","paceBorder","dangerBorder","unkBorder");
-    pace.classList.remove("goodBorder","paceBorder","dangerBorder","unkBorder");
-
-    const cls = status === "AHEAD" ? "goodBorder"
-      : status === "ON PACE" ? "paceBorder"
-      : status === "BEHIND" ? "dangerBorder"
-      : "unkBorder";
-
-    hud.classList.add(cls);
-    pace.classList.add(cls);
-  }
-
-  function renderList(){
-    const list = el("list");
-    list.innerHTML = "";
-
-    const arr = [...(state.weighIns||[])].sort((a,b)=>b.t-a.t).slice(0,14);
-    if (!arr.length){
-      list.innerHTML = `<div class="mono">No weigh-ins yet. Log one in the box above.</div>`;
-      return;
     }
 
-    for (const wi of arr){
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <div>
-          <div style="font-weight:900">${fmt2(wi.w)} lb</div>
-          <small>${fmtLocal(wi.t)}</small>
-        </div>
-        <button class="btnGhost" style="padding:8px 10px" data-t="${wi.t}">x</button>
-      `;
-      div.querySelector("button").addEventListener("click", (e)=>{
-        const t = Number(e.currentTarget.getAttribute("data-t"));
-        state.weighIns = (state.weighIns||[]).filter(x=>x.t!==t);
-        save(); render();
-      });
-      list.appendChild(div);
-    }
+    // List Rendering
+    document.getElementById('list').innerHTML = state.weighIns.slice().reverse().slice(0,7).map(i => `
+      <div class="item">
+        <span style="font-weight:bold">${i.w} lbs</span>
+        <span class="label">${new Date(i.t).toLocaleDateString()}</span>
+      </div>
+    `).join('');
   }
 
-  function render(){
-    const nowMs = Date.now();
-    el("nowStr").textContent = fmtLocal(nowMs);
-
-    // settings inputs
-    el("startAt").value = toInputLocal(state.startAt);
-    el("endAt").value = toInputLocal(state.endAt);
-    el("startWeight").value = String(state.startWeight ?? "");
-    el("goalLoss").value = String(state.goalLoss ?? "");
-
-    const ok = validContract();
-    el("validNote").textContent = ok ? "Contract valid ✅" : "Set start/end + numbers (goalLoss > 0)";
-
-    el("deadlineStr").textContent = ok ? fmtLocal(state.endAt) : "—";
-    el("remain").textContent = ok ? formatDuration(state.endAt - nowMs) : "—";
-
-    const p = timeProgress(nowMs);
-    el("pct").textContent = ok ? `${(p*100).toFixed(4)}%` : "—";
-
-    const tNow = targetWeightNow(nowMs);
-    el("targetNow").textContent = ok ? `${fmt2(tNow)} lb` : "—";
-    el("target24").textContent = ok ? `${fmt2(targetAt(nowMs, 24*3600*1000))} lb` : "—";
-    el("target7").textContent = ok ? `${fmt2(targetAt(nowMs, 7*24*3600*1000))} lb` : "—";
-
-    const latest = latestWeighIn();
-    if (!latest || !ok){
-      el("status").textContent = ok ? "LOG WEIGHT" : "SET CONTRACT";
-      el("status").style.color = statusColor("UNKNOWN");
-      el("delta").textContent = ok ? "—" : "Go to Settings and lock it in.";
-      el("latestWhen").textContent = latest ? fmtLocal(latest.t) : "—";
-      setCardBorderByStatus("UNKNOWN");
-    } else {
-      const delta = tNow - latest.w; // + means you are below target (ahead)
-      const s = statusFromDelta(delta);
-      el("status").textContent = s;
-      el("status").style.color = statusColor(s);
-      el("delta").textContent = `${delta >= 0 ? "+" : ""}${fmt2(delta)} lb vs target`;
-      el("latestWhen").textContent = fmtLocal(latest.t);
-      setCardBorderByStatus(s);
+  // Input Handler
+  document.getElementById('addWeigh').onclick = () => {
+    const val = parseFloat(document.getElementById('weighInput').value);
+    if (val) {
+      state.weighIns.push({ t: Date.now(), w: val });
+      saveState();
+      document.getElementById('weighInput').value = '';
+      render();
     }
+  };
 
-    renderList();
-
-    // summary
-    const goalWeight = ok ? (state.startWeight - state.goalLoss) : NaN;
-    el("summary").textContent = ok
-      ? `Goal weight: ${fmt2(goalWeight)} lb • Duration: ${formatDuration(state.endAt - state.startAt)}`
-      : "";
-  }
-
-  // UI handlers
-  el("toggleSettings").addEventListener("click", ()=>{
-    const card = el("settingsCard");
-    card.style.display = card.style.display === "none" ? "flex" : "none";
-  });
-
-  el("saveSettings").addEventListener("click", ()=>{
-    const s = parseInputLocal(el("startAt").value);
-    const e = parseInputLocal(el("endAt").value);
-    const sw = Number(el("startWeight").value);
-    const gl = Number(el("goalLoss").value);
-
-    if (!Number.isFinite(s) || !Number.isFinite(e)) {
-      alert("Bad date/time. Use the picker fields.");
-      return;
+  // Wipe Handler
+  document.getElementById('wipe').onclick = () => {
+    if (confirm("Clear all weigh-ins and reset?")) {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
     }
-    if (!Number.isFinite(sw) || !Number.isFinite(gl) || gl <= 0) {
-      alert("Bad numbers. Start weight and goal loss must be valid. Goal loss > 0.");
-      return;
-    }
-    if (e <= s) {
-      alert("Deadline must be after start.");
-      return;
-    }
+  };
 
-    state.startAt = s;
-    state.endAt = e;
-    state.startWeight = sw;
-    state.goalLoss = gl;
-
-    save();
-    render();
-  });
-
-  el("addWeigh").addEventListener("click", ()=>{
-    if (!validContract()){
-      alert("Set the contract first in Settings.");
-      return;
-    }
-    const w = Number(el("weighInput").value);
-    if (!Number.isFinite(w) || w <= 0){
-      alert("Enter a valid weight (lbs).");
-      return;
-    }
-    state.weighIns = [...(state.weighIns||[]), {t: Date.now(), w}];
-    el("weighInput").value = "";
-    save(); render();
-  });
-
-  el("removeLatest").addEventListener("click", ()=>{
-    const latest = latestWeighIn();
-    if (!latest) return;
-    if (!confirm("Remove latest weigh-in?")) return;
-    state.weighIns = (state.weighIns||[]).filter(x => x.t !== latest.t || x.w !== latest.w);
-    save(); render();
-  });
-
-  el("help").addEventListener("click", ()=>{
-    alert(
-`How to use:
-- Set start + deadline + weights in Settings.
-- Log weight once per day (morning, after toilet, before food/water).
-- This does NOT reset at midnight — it’s a single continuous contract line from start → deadline.
-
-If you're behind pace, the 24h / 7d targets are your checkpoints to get back on contract.`
-    );
-  });
-
-  el("wipe").addEventListener("click", ()=>{
-    if (!confirm("Wipe EVERYTHING? (contract + weigh-ins)")) return;
-    localStorage.removeItem(KEY);
-    location.reload();
-  });
-
-  // init
-  load();
-  // if no start/end yet, seed some sensible defaults
-  if (!Number.isFinite(state.startAt)) state.startAt = Date.now();
-  if (!Number.isFinite(state.endAt)) state.endAt = Date.now() + 1000*60*60*24*84; // 12w
-
+  // Run
+  loadState();
+  setInterval(render, 100);
   render();
-  setInterval(render, 1000);
 </script>
 </body>
 </html>
