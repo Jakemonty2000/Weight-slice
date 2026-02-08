@@ -1,173 +1,589 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Cut Contract</title>
-  <style>
-    :root{
-      --bg:#0b1220; --card:#0f1a31; --border:#203050;
-      --text:#ffffff; --muted:#a8b3cf;
-      --btn:#2563eb; --ahead:#22c55e; --behind:#ef4444;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);padding:15px;padding-bottom:50px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:12px}
-    .big{font-size:32px;font-weight:950;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-    .label{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:1px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .status-good{color:var(--ahead)}
-    .status-bad{color:var(--behind)}
-    input{width:100%;background:#0b1220;border:1px solid #2a3a60;border-radius:10px;padding:12px;color:white;margin:10px 0;font-size:16px}
-    .btn{background:var(--btn);border:none;color:white;padding:14px;border-radius:12px;font-weight:800;width:100%;cursor:pointer}
-    .btn:active{transform:scale(0.98)}
-    .item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1f2a44}
-    .check-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-weight:700;font-size:14px}
-    input[type="checkbox"]{width:22px;height:22px;margin:0}
-    .save-indicator{font-size:10px;color:var(--ahead);float:right;margin-top:4px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Cut Contract Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 172, 132, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(254, 202, 87, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ff6b6b 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .contract-dates {
+            font-size: 0.95em;
+            color: #8b92b0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .days-remaining {
+            font-size: 1.15em;
+            color: #feca57;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(254, 202, 87, 0.4);
+        }
+
+        .timeline-progress {
+            margin-top: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-percent {
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10ac84, #1dd1a1, #10ac84);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            letter-spacing: -2px;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 0 40px rgba(16, 172, 132, 0.3);
+        }
+
+        .timeline-label {
+            font-size: 0.8em;
+            color: #8b92b0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .timeline-bar {
+            background: rgba(16, 172, 132, 0.15);
+            border-radius: 12px;
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10ac84, #1dd1a1, #10ac84);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(16, 172, 132, 0.5);
+            animation: gradientFlow 2s linear infinite;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.6s ease-out;
+            animation-fill-mode: both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
+        .card-title {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #8b92b0;
+            margin-bottom: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-value {
+            font-size: 3.5em;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .card-subtitle {
+            font-size: 0.95em;
+            color: #9ca5c0;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            height: 14px;
+            margin-top: 18px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #ff6b6b);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+            animation: gradientFlow 2s linear infinite;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 18px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.7em;
+            color: #8b92b0;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 900;
+            color: #feca57;
+            text-shadow: 0 0 20px rgba(254, 202, 87, 0.4);
+            letter-spacing: -1px;
+        }
+
+        .burn-indicator {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(238, 90, 36, 0.2) 100%);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            position: relative;
+        }
+
+        .burn-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+            animation: scanLine 2s linear infinite;
+        }
+
+        .burn-indicator .card-value {
+            color: #ff6b6b;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .deficit-indicator {
+            background: linear-gradient(135deg, rgba(10, 189, 227, 0.2) 0%, rgba(72, 219, 251, 0.2) 100%);
+            border: 1px solid rgba(10, 189, 227, 0.3);
+            position: relative;
+        }
+
+        .deficit-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #48dbfb, transparent);
+            animation: scanLine 2.5s linear infinite;
+        }
+
+        .deficit-indicator .card-value {
+            text-shadow: 0 0 30px rgba(72, 219, 251, 0.5);
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.65em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #ff6b6b;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 35px;
+            color: #5a6278;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .fun-fact {
+            background: rgba(254, 202, 87, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(254, 202, 87, 0.2);
+            box-shadow: 0 8px 32px rgba(254, 202, 87, 0.1);
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .fun-fact-emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .fun-fact-text {
+            font-size: 1em;
+            color: #feca57;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .timeline-percent {
+                font-size: 2.5em;
+            }
+
+            .timeline-progress {
+                padding: 20px 15px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .card-value {
+                font-size: 2.8em;
+            }
+
+            .stat-value {
+                font-size: 1.6em;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>CUT CONTRACT</h1>
+            <div class="contract-dates">Feb 8, 2026 - May 1, 2026</div>
+            <div class="days-remaining" id="daysRemaining">Loading...</div>
+            <div class="timeline-progress">
+                <div class="timeline-percent" id="timelinePercent">--</div>
+                <div class="timeline-label">Contract Complete</div>
+                <div class="timeline-bar">
+                    <div class="timeline-fill" id="timelineFill"></div>
+                </div>
+            </div>
+        </div>
 
-  <div class="card">
-    <span class="save-indicator" id="saveHint">● SYNCED</span>
-    <div class="label">Daily Mission</div>
-    <div class="check-row"><input type="checkbox"> 12-3-30 Treadmill</div>
-    <div class="check-row"><input type="checkbox"> 10,000 Steps</div>
-    <div class="check-row"><input type="checkbox"> 1,600 Cals (Chicken/Rice/Eggs)</div>
-  </div>
+        <div class="card">
+            <div class="card-title">Current Target Weight</div>
+            <div class="card-value" id="targetWeight">--</div>
+            <div class="card-subtitle">lbs (updating live)</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Start</div>
+                    <div class="stat-value">216</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Goal</div>
+                    <div class="stat-value">186</div>
+                </div>
+            </div>
+        </div>
 
-  <div class="card">
-    <div class="label">Live Burn (TDEE 2800)</div>
-    <div class="big" id="liveBurn">0.000</div>
-    <div class="label" id="deficitDisp" style="margin-top:5px;color:var(--ahead)">Current Deficit: 0 kcal</div>
-  </div>
+        <div class="card burn-indicator">
+            <div class="card-title">Today's Calorie Burn <span class="live-badge">Live</span></div>
+            <div class="card-value" id="calorieBurn">--</div>
+            <div class="card-subtitle">calories burned today (TDEE: 2800/day)</div>
+        </div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="label">Contract</div>
-      <div class="big" id="pct">0.00%</div>
+        <div class="card deficit-indicator">
+            <div class="card-title">Total Net Deficit</div>
+            <div class="card-value" id="netDeficit">--</div>
+            <div class="card-subtitle">calories since Feb 8 (rolling total)</div>
+        </div>
+
+        <div class="fun-fact">
+            <span class="fun-fact-emoji" id="funFactEmoji">🔥</span>
+            <div class="fun-fact-text" id="funFactText">Calculating your progress...</div>
+        </div>
+
+        <div class="footer">
+            Stay strong. Stay consistent. 💪
+        </div>
     </div>
-    <div class="card">
-      <div class="label">Target Lbs</div>
-      <div class="big" id="targetNow">0.00</div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="label">Weight Status</div>
-    <div id="status" class="big" style="font-size:26px;margin:5px 0">LOG WEIGHT</div>
-    <input id="weighInput" type="number" step="0.1" inputmode="decimal" placeholder="Enter lbs">
-    <button class="btn" id="addWeigh">Add Weigh-In</button>
-  </div>
+    <script>
+        // Contract configuration
+        const START_DATE = new Date('2026-02-08T00:00:00');
+        const END_DATE = new Date('2026-05-01T00:00:00');
+        const START_WEIGHT = 216;
+        const GOAL_WEIGHT = 186;
+        const TOTAL_LOSS = START_WEIGHT - GOAL_WEIGHT;
+        const TDEE_PER_DAY = 2800;
+        const PLANNED_INTAKE = 1600;
+        const DAILY_DEFICIT = TDEE_PER_DAY - PLANNED_INTAKE;
 
-  <div class="card">
-    <div class="label">Log History</div>
-    <div id="list" style="margin-top:10px"></div>
-    <button class="btn" style="background:transparent;color:var(--behind);font-size:12px;margin-top:20px" id="wipe">Wipe All Data</button>
-  </div>
+        // Calculate total seconds in contract
+        const totalSeconds = (END_DATE - START_DATE) / 1000;
+        const weightLossPerSecond = TOTAL_LOSS / totalSeconds;
 
-<script>
-  const STORAGE_KEY = "CUT_CONTRACT_OFFICIAL_v1";
+        // Calculate calories per second
+        const caloriesPerSecond = TDEE_PER_DAY / (24 * 60 * 60);
 
-  // 1. Initial State
-  let state = {
-    startAt: new Date("2026-02-08T00:00:00").getTime(),
-    endAt: new Date("2026-05-01T00:00:00").getTime(),
-    startWeight: 216,
-    goalLoss: 30,
-    dailyIntake: 1600,
-    tdee: 2800,
-    weighIns: []
-  };
+        // Fun fact comparisons (calories per item)
+        const funFacts = [
+            { threshold: 0, item: 'celery sticks', calories: 6, emoji: '🥬' },
+            { threshold: 500, item: 'apples', calories: 95, emoji: '🍎' },
+            { threshold: 1000, item: 'bananas', calories: 105, emoji: '🍌' },
+            { threshold: 2000, item: 'protein bars', calories: 200, emoji: '🍫' },
+            { threshold: 5000, item: 'bagels', calories: 280, emoji: '🥯' },
+            { threshold: 10000, item: 'slices of pizza', calories: 285, emoji: '🍕' },
+            { threshold: 20000, item: 'Big Macs', calories: 550, emoji: '🍔' },
+            { threshold: 40000, item: 'Chipotle burritos', calories: 1000, emoji: '🌯' },
+            { threshold: 80000, item: 'large pizzas', calories: 2400, emoji: '🍕' },
+            { threshold: 150000, item: 'Thanksgiving dinners', calories: 3000, emoji: '🦃' },
+            { threshold: 250000, item: 'days of food', calories: 2000, emoji: '🍽️' },
+            { threshold: 500000, item: 'months of food', calories: 60000, emoji: '📅' },
+        ];
 
-  // 2. Load Function (The "Forever" Memory)
-  function loadState() {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (data) {
-      const parsed = JSON.parse(data);
-      state = { ...state, ...parsed }; 
-    }
-  }
+        function getFunFact(totalCalories) {
+            // Find the appropriate fun fact based on threshold
+            let selectedFact = funFacts[0];
+            for (let i = funFacts.length - 1; i >= 0; i--) {
+                if (totalCalories >= funFacts[i].threshold) {
+                    selectedFact = funFacts[i];
+                    break;
+                }
+            }
 
-  // 3. Save Function
-  function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    const hint = document.getElementById('saveHint');
-    hint.innerText = "● SAVED";
-    setTimeout(() => { hint.innerText = "● SYNCED"; }, 2000);
-  }
+            const count = Math.floor(totalCalories / selectedFact.calories);
+            const plural = count !== 1 ? 's' : '';
+            
+            return {
+                emoji: selectedFact.emoji,
+                text: `You've burned the equivalent of ${count.toLocaleString()} ${selectedFact.item}${selectedFact.item === 'days of food' || selectedFact.item === 'months of food' ? '' : plural}!`
+            };
+        }
 
-  function render() {
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    
-    // Live Burn Math
-    const msSinceMidnight = now.getTime() - startOfDay;
-    const burnedSoFar = msSinceMidnight * (state.tdee / 86400000);
-    document.getElementById('liveBurn').innerText = burnedSoFar.toFixed(3);
-    
-    const intakeSoFar = (state.dailyIntake / 86400000) * msSinceMidnight;
-    document.getElementById('deficitDisp').innerText = "Current Deficit: " + Math.floor(burnedSoFar - intakeSoFar) + " kcal";
+        function updateTracker() {
+            const now = new Date();
+            
+            // Calculate days remaining
+            const timeRemaining = END_DATE - now;
+            const daysRemaining = Math.max(0, Math.ceil(timeRemaining / (1000 * 60 * 60 * 24)));
+            document.getElementById('daysRemaining').textContent = 
+                `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} remaining`;
 
-    // Contract Progress Math
-    const totalContractTime = state.endAt - state.startAt;
-    const elapsed = now.getTime() - state.startAt;
-    const progress = Math.max(0, Math.min(1, elapsed / totalContractTime));
-    
-    document.getElementById('pct').innerText = (progress * 100).toFixed(2) + "%";
-    
-    const currentTarget = state.startWeight - (state.goalLoss * progress);
-    document.getElementById('targetNow').innerText = currentTarget.toFixed(2);
+            // Calculate timeline percentage
+            const totalDuration = END_DATE - START_DATE;
+            const elapsed = now - START_DATE;
+            const percentComplete = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
+            
+            document.getElementById('timelinePercent').textContent = `${percentComplete.toFixed(4)}%`;
+            document.getElementById('timelineFill').style.width = `${percentComplete}%`;
 
-    // Pace Logic
-    const statusEl = document.getElementById('status');
-    if (state.weighIns.length > 0) {
-      const latest = state.weighIns[state.weighIns.length - 1].w;
-      const diff = currentTarget - latest;
-      if (diff >= 0) {
-        statusEl.innerText = "AHEAD +" + diff.toFixed(2);
-        statusEl.className = "big status-good";
-      } else {
-        statusEl.innerText = "BEHIND " + Math.abs(diff).toFixed(2);
-        statusEl.className = "big status-bad";
-      }
-    }
+            // Calculate current target weight (linear drop every second)
+            const secondsElapsed = Math.max(0, (now - START_DATE) / 1000);
+            const weightLost = Math.min(TOTAL_LOSS, secondsElapsed * weightLossPerSecond);
+            const currentTargetWeight = START_WEIGHT - weightLost;
+            
+            document.getElementById('targetWeight').textContent = currentTargetWeight.toFixed(2);
 
-    // List Rendering
-    document.getElementById('list').innerHTML = state.weighIns.slice().reverse().slice(0,7).map(i => `
-      <div class="item">
-        <span style="font-weight:bold">${i.w} lbs</span>
-        <span class="label">${new Date(i.t).toLocaleDateString()}</span>
-      </div>
-    `).join('');
-  }
+            // Update progress bar
+            const progressPercent = Math.min(100, (weightLost / TOTAL_LOSS) * 100);
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
 
-  // Input Handler
-  document.getElementById('addWeigh').onclick = () => {
-    const val = parseFloat(document.getElementById('weighInput').value);
-    if (val) {
-      state.weighIns.push({ t: Date.now(), w: val });
-      saveState();
-      document.getElementById('weighInput').value = '';
-      render();
-    }
-  };
+            // Calculate today's calorie burn (resets at midnight)
+            const midnight = new Date(now);
+            midnight.setHours(0, 0, 0, 0);
+            const secondsSinceMidnight = (now - midnight) / 1000;
+            const caloriesBurned = Math.min(TDEE_PER_DAY, secondsSinceMidnight * caloriesPerSecond);
+            
+            document.getElementById('calorieBurn').textContent = Math.floor(caloriesBurned).toLocaleString();
 
-  // Wipe Handler
-  document.getElementById('wipe').onclick = () => {
-    if (confirm("Clear all weigh-ins and reset?")) {
-      localStorage.removeItem(STORAGE_KEY);
-      location.reload();
-    }
-  };
-
-  // Run
-  loadState();
-  setInterval(render, 100);
-  render();
-</script>
-</body>
-</html>
+            // Calculate cumulative net deficit (rolling total since contract start)
+            const totalSecondsElapsed = Math.max(0, (now - START_DATE) / 1000);
+     
